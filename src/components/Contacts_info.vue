@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-6">
                     <input class="form-control"
-                           v-model="resume.firstName" placeholder="Имя"
+                           v-model="resume.firstname_resume" placeholder="Имя"
                     >
                 </div>
             </div>
@@ -21,7 +21,7 @@
                     <label>Фамилия</label>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" v-model="resume.secondName" placeholder="Фамилия">
+                    <input class="form-control" v-model="resume.secondname_resume" placeholder="Фамилия">
                 </div>
             </div>
             <!-- Конец блока с информацией о фамилии пользователя -->
@@ -31,7 +31,7 @@
                     <label>Телефон</label>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" v-model="resume.phone" placeholder="+7">
+                    <input class="form-control" v-model="resume.phone_resume" placeholder="890231...">
                 </div>
             </div>
             <!-- Конец блока с информацией о номере телефона пользователя -->
@@ -41,7 +41,7 @@
                     <label>Email</label>
                 </div>
                 <div class="col-6">
-                    <input class="form-control" v-model="resume.email" placeholder="@mail.ru">
+                    <input class="form-control" v-model="resume.email_resume" placeholder="@mail.ru">
                 </div>
             </div>
             <!-- Конец блока с информацией о Email пользователя -->
@@ -51,7 +51,7 @@
                     <label>Город проживания</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" v-model="resume.city" v-on:input="getCityFromVk"
+                    <input type="text" class="form-control" v-model="resume.city_resume" v-on:input="getCityFromVk"
                            list="cities" placeholder="Город">
                     <datalist id="cities">
                         <option v-for="city in citiesVK" v-bind:key="city.title">{{city.title}}</option>
@@ -86,7 +86,7 @@
                 });
             },
             getCity:function () {
-                return this.resume.city;
+                return this.resume.city_resume;
             }
         }
     }

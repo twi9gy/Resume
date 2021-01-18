@@ -8,9 +8,9 @@
                 <div class="col-6 mt-auto mb-auto">
                     <label>Фотография</label>
                 </div>
-                <div class="col-6" v-if="resume.imgUrl !== ''">
+                <div class="col-6" v-if="resume.imgurl_resume !== ''">
                     <img class="img-fluid img-thumbnail p-2 w-100 h-auto" style="min-height: 150px;"
-                         v-bind:src="resume.imgUrl"
+                         :src=getImgUrl()
                          v-on:click="$emit('img_click')"
                     />
                 </div>
@@ -23,12 +23,12 @@
             </div>
             <!-- Конец блока с изображением пользователя -->
             <!-- Блок статуса резюме -->
-            <div class="row mt-2 mb-2">
+            <div class="row mt-2 mb-2" v-if="is_edit">
                 <div class="col-6">
                     <label>Стасус</label>
                 </div>
                 <div class="col-6">
-                    <b-form-select v-model="resume.status" :options="status_options"></b-form-select>
+                    <b-form-select v-model="resume.status_resume" :options="status_options"></b-form-select>
                 </div>
             </div>
             <!-- Конец блока статуса резюме -->
@@ -38,7 +38,7 @@
                     <label>Дата рождения</label>
                 </div>
                 <div class="col-6">
-                    <input type="date" class="form-control" v-model="resume.birthday">
+                    <input type="date" class="form-control" v-model="resume.birthday_resume">
                 </div>
             </div>
             <!-- Конец блока с датой рождения пользователя -->
@@ -49,8 +49,8 @@
                 </div>
                 <div class="col-6">
                     <b-form-group class="d-flex">
-                        <b-form-radio v-model="resume.gender" value="Мужской">Мужской</b-form-radio>
-                        <b-form-radio v-model="resume.gender" value="Женский">Женский</b-form-radio>
+                        <b-form-radio v-model="resume.gender_resume" value="Мужской">Мужской</b-form-radio>
+                        <b-form-radio v-model="resume.gender_resume" value="Женский">Женский</b-form-radio>
                     </b-form-group>
                 </div>
             </div>
@@ -62,8 +62,8 @@
                 </div>
                 <div class="col-6">
                     <b-form-group class="d-flex" >
-                        <b-form-radio v-model="resume.workExperience" value="Есть">Есть</b-form-radio>
-                        <b-form-radio v-model="resume.workExperience" value="Нет" class="mr-2">Нет</b-form-radio>
+                        <b-form-radio v-model="resume.work_experience_resume" value="Есть">Есть</b-form-radio>
+                        <b-form-radio v-model="resume.work_experience_resume" value="Нет" class="mr-2">Нет</b-form-radio>
                     </b-form-group>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                     <label>Профессия</label>
                 </div>
                 <div class="col-6">
-                    <input type="text" class="form-control" placeholder="Профессия" v-model="resume.profession">
+                    <input type="text" class="form-control" placeholder="Профессия" v-model="resume.profession_resume">
                 </div>
             </div>
             <!-- Конец блока с информацией о профессии пользователя -->
@@ -84,7 +84,7 @@
                     <label>Образование</label>
                 </div>
                 <div class="col-6">
-                    <b-form-select v-model="resume.educationMain" :options="educationMain_options"></b-form-select>
+                    <b-form-select v-model="resume.education_level_resume" :options="educationMain_options"></b-form-select>
                 </div>
             </div>
             <!-- Конец блока с информацией об образовании пользователя -->
@@ -95,8 +95,8 @@
                 </div>
                 <div class="col-6">
                     <div class="d-flex">
-                        <input type="text" class="form-control" placeholder="Число" v-model="resume.salary">
-                        <b-form-select v-model="resume.currency" :options="currency_options"></b-form-select>
+                        <input type="text" class="form-control" placeholder="Число" v-model="resume.salary_resume">
+                        <b-form-select v-model="resume.currency_resume" :options="currency_options"></b-form-select>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                     <label>Ключевые навыки</label>
                 </div>
                 <div class="col-6">
-                    <textarea class="form-control" v-model="resume.ability"></textarea>
+                    <textarea class="form-control" v-model="resume.ability_resume"></textarea>
                 </div>
             </div>
             <!-- Конец блока с информацией о ключевых навыках пользователя -->
@@ -117,15 +117,10 @@
                     <label>О себе</label>
                 </div>
                 <div class="col-6">
-                    <textarea class="form-control" v-model="resume.about"></textarea>
+                    <textarea class="form-control" v-model="resume.about_resume"></textarea>
                 </div>
             </div>
             <!-- Конец блока с информацией о себе -->
-            <div class="row mt-2 mb-2 justify-content-center">
-                <div class="col-6">
-                    <input type="submit" class="btn btn-success pl-5 pr-5" value="Сохранить">
-                </div>
-            </div>
         </div>
         <!-- Конец блока основной информации -->
     </div>
@@ -134,7 +129,7 @@
 <script>
     export default {
         name: "Main_Info",
-        props:['resume'],
+        props:['resume', 'is_edit'],
         data(){
             return{
                 status_options: [
@@ -159,6 +154,11 @@
                     { value: 'EUR', text: 'EUR'}
                 ]
             }
+        },
+        methods: {
+            getImgUrl: function() {
+                return require('../assets/' + this.resume.imgurl_resume);
+            },
         }
     }
 </script>

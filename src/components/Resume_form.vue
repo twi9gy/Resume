@@ -1,62 +1,47 @@
 <template>
     <div class="container-fluid">
-        <div class="row justify-content-center bg-primary">
+        <div class="row justify-content-center">
             <div class="col-12">
-                <!-- Форма для основной информации -->
-                <form id="info" v-on:submit="checkForm_info" method="post">
-                    <!-- Блок ошибок -->
-                    <div class="row justify-content-center mt-2" v-if="errors.length">
-                        <div class="col-6 bg-white rounded-lg mt-2 mb-2">
-                            <h3 class="mt-2">Пожалуйста исправьте указанные ошибки:</h3>
-                            <b-list-group class="mb-2">
-                                <b-list-group-item v-for="error in errors" :key="error">{{error}}</b-list-group-item>
-                            </b-list-group>
-                        </div>
-                    </div>
-                    <!-- Конец блока ошибок -->
-                    <!-- Блок с контактной информацией -->
-                    <div class="row justify-content-center">
-                        <Contacts_info
-                                v-bind:resume="resume"
-                                v-bind:errors="errors"
-                        />
-                    </div>
-                    <!-- Конец блока с контактной информацией -->
-                    <!-- Блок основной информации -->
-                    <div class="row justify-content-center">
-                        <Main_Info class="main_info"
-                                   v-bind:resume="resume"
-                                   v-on:img_click="img_click"
-                        />
-                    </div>
-                    <!-- Конец блока основной информации -->
-                </form>
-                <!-- Конец формы для основной информации -->
+                <!-- Блок с контактной информацией -->
+                <div class="row justify-content-center">
+                    <Contacts_info
+                            v-bind:resume="resume"
+                    />
+                </div>
+                <!-- Конец блока с контактной информацией -->
+                <!-- Блок основной информации -->
+                <div class="row justify-content-center">
+                    <Main_Info class="main_info"
+                               v-bind:resume="resume"
+                               v-bind:is_edit="is_edit"
+                               v-on:img_click="img_click"
+                    />
+                </div>
+                <!-- Конец блока основной информации -->
             </div>
             <!-- Блок с изображением пользователя -->
-            <input id="img_file" type="file" class="d-none" v-on:change="selectImg">
+            <input id="img_file" type="file" ref="file" class="d-none" v-on:change="selectImg">
             <!-- Конец блока с изображением пользователя -->
             <!-- Блок специальностей -->
-            <div class="col-6 bg-white rounded-lg m-2" v-if="resume.workExperience === 'Есть'">
+            <div class="col-6 bg-white rounded-lg m-2" v-if="resume.work_experience_resume === 'Есть'">
                 <h1 class="specialties_title">Специальность</h1>
-                <Specialtie
-                        v-for="specialtie in resume.specialties" :key="specialtie.id"
-                        v-bind:specialtie="specialtie"
-                        v-on:change="changeCurrency"
-                        v-on:deleteSpecialtie="deleteSpecialtie"
+                <Specialty
+                        v-for="specialty in specialties" :key="specialty.id"
+                        v-bind:specialty="specialty"
+                        v-on:deleteSpecialtie="deleteSpecialty"
                 />
                 <div class="row mt-2 mb-2">
                     <div class="col">
-                        <button class="btn btn-primary" v-on:click="add_specialtie">Добавить специальность</button>
+                        <button class="btn btn-primary" v-on:click="add_specialty">Добавить специальность</button>
                     </div>
                 </div>
             </div>
             <!-- Конец блока специальностей -->
             <!-- Блок образования -->
-            <div class="col-6 bg-white rounded-lg m-2" v-if="resume.educationMain !== 'Среднее'">
+            <div class="col-6 bg-white rounded-lg m-2" v-if="resume.education_level_resume !== 'Среднее'">
                 <h1 class="specialties_title">Образование</h1>
                 <Education
-                        v-for="education in resume.educations" :key="education.id"
+                        v-for="education in educations" :key="education.id"
                         v-bind:education="education"
                         v-bind:selected_city="resume.city"
                         v-on:deleteEducation="deleteEducation"
@@ -75,17 +60,12 @@
 <script>
     import Contacts_info from "./Contacts_info";
     import Main_Info from "./Main_Info";
-    import Specialtie from "./Specialtie";
+    import Specialty from "./Specialty";
     import Education from "./Education";
     export default {
         name: "Resume_form",
-        components: {Education, Specialtie, Main_Info, Contacts_info},
-        data() {
-            return{
-                errors:[]
-            }
-        },
-        props:['resume'],
+        components: {Education, Specialty, Main_Info, Contacts_info},
+        props:['resume', 'specialties', 'educations', 'is_edit'],
         methods:{
             // Вызов диалогового окна, для выбора изображения
             img_click(){
@@ -95,74 +75,73 @@
 
             // Функция для обработки события "Выбор изображения"
             selectImg(){
-                let img_file = document.getElementById('img_file');
-                let files = img_file.files;
-                this.resume.imgUrl = files[0].name;
+                this.resume.imgurl_resume = this.$refs.file.files[0];
+
+                let formData = new FormData();
+                formData.append('file', this.$refs.file.files[0]);
+
+                this.axios({
+                    method: 'POST',
+                    url: 'http://api/upload',
+                    data: formData,
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                }).then(response => (this.resume.imgurl_resume = response.data.filename))
+                    .catch(error => (console.log(error)));
             },
 
             // Функция для обработки события "Добавление специальности"
-            add_specialtie(){
-                let newSpecialtie = {
-                    positionJob: "",
-                    salary: "",
-                    specializations: ""
+            add_specialty(){
+                let newSpecialty = {
+                    id_specialties: "",
+                    position_specialties: "",
+                    salary_specialties: "",
+                    specializations_specialties: "",
+                    dateentry_specialties: "",
+                    currency_specialties: "",
+                    id_resume: "",
+                    is_edit: false
                 };
-                this.resume.specialties.push(newSpecialtie);
+                this.specialties.push(newSpecialty);
             },
 
             // Функция для обработки события "Добавление образования"
-            add_education(){
+            add_education() {
                 let newEducation = {
-                    level: "",
-                    institution: "",
-                    faculty: "",
-                    specialization:"",
-                    yearEnd: ""
+                    id_educations: "",
+                    level_educations: "",
+                    institution_educations: "",
+                    faculty_educations: "",
+                    specialization_educations:"",
+                    yearend_educations: "",
+                    id_resume: this.resume.id_resume,
+                    is_edit: false
                 };
-                this.resume.educations.push(newEducation);
+                console.log(this.educations);
+                this.educations.push(newEducation);
             },
 
             // Функция для обработки события "Удаление специальности"
-            deleteSpecialtie(specialtie){
-                this.resume.specialties.splice(this.resume.specialties.indexOf(specialtie), 1);
+            deleteSpecialty(specialty){
+                this.axios({
+                    method: 'DELETE',
+                    url: 'http://api/specialty/' + specialty.id_specialties + '/delete'
+                }).then(response => (console.log(response.data.message)))
+                    .catch(error => (console.log(error.data.message)));
+
+                this.specialties.splice(this.specialties.indexOf(specialty), 1);
             },
 
             // Функция для обработки события "Удаление образования"
             deleteEducation(education){
-                this.resume.educations.splice(this.resume.educations.indexOf(education), 1);
-            },
+                this.axios({
+                    method: 'DELETE',
+                    url: 'http://api/education/' + education.id_educations + '/delete'
+                }).then(response => (console.log(response.data.message)))
+                    .catch(error => (console.log(error.data.message)));
 
-            // Валидация формы
-            checkForm_info: function (e) {
-                this.errors = [];
-
-                if (!this.resume.firstName) {
-                    this.errors.push('Требуется указать имя.');
-                }
-                if (!this.resume.secondName) {
-                    this.errors.push('Требуется указать фамилию.');
-                }
-                if (!this.resume.phone) {
-                    this.errors.push('Требуется указать номер.');
-                } else if (!this.validPhone(this.resume.phone)) {
-                    this.errors.push('Укажите корректный телефон. Он должен состоять' +
-                        'из цифр и имеет длину от 6 до 10 символов.');
-                }
-
-                if (!this.resume.email) {
-                    this.errors.push('Требуется указать Email.');
-                }
-                if (!this.resume.city) {
-                    this.errors.push('Требуется указать город проживания.');
-                }
-
-                e.preventDefault();
-            },
-
-            // Функция для валидации номера телефона
-            validPhone: function (phone) {
-                var re = /^[0-9]{6,9}$/;
-                return re.test(phone);
+                this.educations.splice(this.educations.indexOf(education), 1);
             }
         }
     }

@@ -7,7 +7,7 @@
                 <label>Уровень</label>
             </div>
             <div class="col-6">
-                <b-form-select v-model="education.level" :options="educationMain_options"></b-form-select>
+                <b-form-select v-model="education.level_educations" :options="educationMain_options"></b-form-select>
             </div>
         </div>
         <!-- Конец блока уровень образования -->
@@ -17,7 +17,7 @@
                 <label>Учебное заведение</label>
             </div>
             <div class="col-6">
-                <input v-model="education.institution" class="form-control" list="institutions"
+                <input v-model="education.institution_educations" class="form-control" list="institutions"
                        v-on:input="getUniversitiesFromVk" placeholder="Учебное заведение"/>
                 <datalist id="institutions">
                     <option v-for="institution in institutionsVk" v-bind:key="institution.title">{{institution.title}}</option>
@@ -31,7 +31,7 @@
                 <label>Факультет</label>
             </div>
             <div class="col-6">
-                <input v-model="education.faculty" class="form-control" placeholder="Факультет"/>
+                <input v-model="education.faculty_educations" class="form-control" placeholder="Факультет"/>
             </div>
         </div>
         <!-- Конец блока факультет -->
@@ -41,7 +41,7 @@
                 <label>Специализация</label>
             </div>
             <div class="col-6">
-                <input v-model="education.specialization" class="form-control" placeholder="Специализация"/>
+                <input v-model="education.specialization_educations" class="form-control" placeholder="Специализация"/>
             </div>
         </div>
         <!-- Конец блока специализация -->
@@ -51,7 +51,7 @@
                 <label>Год окончания</label>
             </div>
             <div class="col-6">
-                <input v-model="education.yearEnd" class="form-control" placeholder="Год окончания" />
+                <input v-model="education.yearend_educations" class="form-control" placeholder="Год окончания" />
             </div>
         </div>
         <!-- Конец блока год окончания -->
@@ -111,9 +111,35 @@
                     }
                 });
             },
+            checkEdit: function (newVal, OldVal) {
+                if(newVal !== OldVal) {
+                    if (OldVal === '' && this.education.id_educations === ''){
+                        this.education.is_edit = true;
+                    } else if (this.education.id_educations !== '' && OldVal !== '') {
+                        this.education.is_edit = true;
+                    }
+                }
+            },
             getInstitution: function () {
-                return this.education.institution;
+                return this.education.institution_educations;
             }
+        },
+        watch: {
+            "education.level_educations": function (newVal, OldVal) {
+                this.checkEdit(newVal, OldVal);
+            },
+            "education.faculty_educations": function (newVal, OldVal) {
+                this.checkEdit(newVal, OldVal);
+            },
+            "education.institution_educations": function (newVal, OldVal) {
+                this.checkEdit(newVal, OldVal);
+            },
+            "education.specialization_educations": function (newVal, OldVal) {
+                this.checkEdit(newVal, OldVal);
+            },
+            "education.yearend_educations": function (newVal, OldVal) {
+                this.checkEdit(newVal, OldVal);
+            },
         }
     }
 </script>

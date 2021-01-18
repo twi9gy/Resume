@@ -7,17 +7,17 @@
                 <label>Занимаемая должность</label>
             </div>
             <div class="col-6">
-                <input v-model="specialtie.positionJob" class="form-control" placeholder="Должность">
+                <input v-model="specialty.position_specialties" class="form-control" placeholder="Должность">
             </div>
         </div>
         <!-- Конец блока с занимаемой должностью -->
         <!-- Блок специализации -->
         <div class="row mt-2 mb-2">
             <div class="col-6">
-                <label>Специализации</label>
+                <label>Специализация</label>
             </div>
             <div class="col-6">
-                <input v-model="specialtie.specializations" class="form-control" placeholder="Специализация">
+                <input v-model="specialty.specializations_specialties" class="form-control" placeholder="Специализация">
             </div>
         </div>
         <!-- Конец блока специализации -->
@@ -28,8 +28,8 @@
             </div>
             <div class="col-6">
                 <div class="d-flex">
-                    <input type="text" class="form-control" placeholder="Число" v-model="specialtie.salary">
-                    <b-form-select v-model="specialtie.currency" :options="currency_options"></b-form-select>
+                    <input type="text" class="form-control" placeholder="Число" v-model="specialty.salary_specialties">
+                    <b-form-select v-model="specialty.currency_specialties" :options="currency_options"></b-form-select>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <label>Дата вступления в должность</label>
             </div>
             <div class="col-6">
-                <input type="date" v-model="specialtie.dateEntry" class="form-control" placeholder="Специализация">
+                <input type="date" v-model="specialty.dateentry_specialties" class="form-control" placeholder="Дата вступления в должность">
             </div>
         </div>
         <!-- Конец блока даты вступления в должность -->
@@ -58,8 +58,8 @@
 
 <script>
     export default {
-        name: "Specialtie",
-        props:['specialtie', 'currency'],
+        name: "Specialty",
+        props:['specialty', 'currency'],
         data(){
             return{
                 currency_options:[
@@ -68,6 +68,34 @@
                     { value: 'EUR', text: 'EUR'}
                 ]
             }
+        },
+        methods: {
+            checkEdit_specialty: function (newVal, OldVal) {
+                if(newVal !== OldVal) {
+                    if (OldVal === '' && this.specialty.id_specialties === ''){
+                        this.specialty.is_edit = true;
+                    } else if (this.specialty.id_specialties !== '' && OldVal !== '') {
+                        this.specialty.is_edit = true;
+                    }
+                }
+            }
+        },
+        watch: {
+            "specialty.position_specialties": function (newVal, OldVal) {
+                this.checkEdit_specialty(newVal, OldVal);
+            },
+            "specialty.specializations_specialties": function (newVal, OldVal) {
+                this.checkEdit_specialty(newVal, OldVal);
+            },
+            "specialty.currency_specialties": function (newVal, OldVal) {
+                this.checkEdit_specialty(newVal, OldVal);
+            },
+            "specialty.dateentry_specialties": function (newVal, OldVal) {
+                this.checkEdit_specialty(newVal, OldVal);
+            },
+            "specialty.salary_specialties": function (newVal, OldVal) {
+                this.checkEdit_specialty(newVal, OldVal);
+            },
         }
     }
 </script>

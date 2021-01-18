@@ -48,19 +48,19 @@
         props:['specialtie'],
         computed : {
             getPositionJob: function () {
-                return this.specialtie.positionJob;
+                return this.specialtie.position_specialties;
             },
             getSpecializations: function () {
-                return this.specialtie.specializations;
+                return this.specialtie.specializations_specialties;
             },
             getDateEntry: function () {
-                return this.specialtie.dateEntry;
+                return this.specialtie.dateentry_specialties;
             },
             getSalary: function () {
-                return this.specialtie.salary;
+                return this.specialtie.salary_specialties;
             },
             getCurrency : function () {
-                return this.specialtie.currency;
+                return this.specialtie.currency_specialties;
             }
         }
     }

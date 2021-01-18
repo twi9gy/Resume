@@ -61,19 +61,19 @@
         },
         computed : {
             getLevel: function () {
-                return this.education.level;
+                return this.education.level_educations;
             },
             getInstitution: function () {
-                return this.education.institution;
+                return this.education.institution_educations;
             },
             getFaculty: function () {
-                return this.education.faculty;
+                return this.education.faculty_educations;
             },
             getSpecialization: function () {
-                return this.education.specialization;
+                return this.education.specialization_educations;
             },
             getYearEnd: function () {
-                return this.education.yearEnd;
+                return this.education.yearend_educations;
             }
         }
     }
